@@ -1,20 +1,26 @@
 %%
 clear all; close all; clc
 
-imgATester = double((imread('img/foret.PNG')))/255;
+%% On a joué sur le size de l'image d'input (x20) 
+% et pour que l image de sortie ne soit pas grande, on l'a fait un resize (x1/20) 
+imgATester = imresize(double((imread('img/lorem - Copy.PNG')))/255,20);
+
+%imgATester = adapthisteq(imgATester);
 imgATesterBW = ~im2bw(imgATester);
 imgReconstructa = imgATesterBW;
 
 figure;
 imshow(imgATesterBW);title('Image à analyser');
-rg = regionprops(imgATesterBW,'PixelIdxList','Centroid','Perimeter');
+%% Region d'interet
+rg = regionprops(imgATesterBW,'PixelIdxList','Centroid'); 
 hold on
+%%boucle pour afficher les valeurs sur les images
 for i = 1:length(rg)
     cc = rg(i).Centroid;
     text(cc(1),cc(2),['',num2str(i)],'Color','r','FontSize',9)
 end
 hold off
-
+%% récuperation des rectangles qui contiennent les ROI
 boundingboxStruct=regionprops(imgATesterBW,'BoundingBox');
 boundingbox = struct2cell(boundingboxStruct);
 
@@ -22,29 +28,23 @@ boundingbox = struct2cell(boundingboxStruct);
 
 val=zeros(2,y);
 
-for i=1:y
+for i=1:y %Y nombre qui es sur l'objet
+    %on compare la ROI avec tous les alphabets
     
     lettreATesterCrop = imcrop(imgATesterBW,cell2mat(boundingbox(i)));
     
-    for n=1:36
+    for n=1:26
         modeleLettre = double((imread(sprintf('./Alphabet/alphabet_%d.png',n))))/255;
         modeleLettreBW = ~im2bw(modeleLettre);
         boundingboxLetterStruct=regionprops(modeleLettreBW,'BoundingBox');
         boundingboxLetter = struct2cell(boundingboxLetterStruct);
         
-        modelLettreCrop = imcrop(modeleLettreBW,cell2mat(boundingboxLetter(1)));
+        modelLettreCrop = imcrop(modeleLettreBW,cell2mat(boundingboxLetter));
+        
+        
         taille = size(lettreATesterCrop);
         
-        % On récupère le périmètre de chaque lettre
-%         perimetreLettreAtester=cell2mat(struct2cell(regionprops(lettreATesterCrop,'Perimeter')));
-%         perimetreModelLettre=cell2mat(struct2cell(regionprops(imresize(modelLettreCrop,taille),'Perimeter')));
-%      
-        
-        
         tmpval = corr2(imresize(modelLettreCrop,taille),lettreATesterCrop);
-%         if (i==21||i==15)
-%             perimetreModelLettre(1)/perimetreLettreAtester(1)
-%         end
         
         if (val(2,i)<tmpval)
             val(1,i)=n;
@@ -58,30 +58,15 @@ for i=1:y
     brailleBW=~im2bw(braille);
  
     tmp=round(cell2mat(boundingbox(1,i)));
-    imgReconstructa(tmp(2):tmp(2)+tmp(4),tmp(1):tmp(1)+tmp(3))=imresize(brailleBW,[tmp(4)+1 tmp(3)+1]);
+    imgReconstructa(tmp(2):tmp(2)+tmp(4),tmp(1):tmp(1)+tmp(3))=imresize(letter,[tmp(4)+1 tmp(3)+1]); %**
     
 end
+%%
+% imgReconstructa = imgATesterBW;
+% tmp=round(cell2mat(boundingbox(1,1)));
+% tmpp=size(tmp);
+% imgReconstructa(tmp(2):tmp(2)+tmp(4),tmp(1):tmp(1)+tmp(3))=1;
 
  %%
 figure;
-imshow(imgReconstructa);
-
-%% skel
-
-%%
-% clear all; close all; clc
-% I = double(imread('img/alpha.PNG'));
-% 
-% Ibw = ~im2bw(I);
-% imshow(Ibw);
-% BW3 = bwmorph(Ibw,'skel',Inf);
-% figure
-% imshow(BW3)
-% 
-% BW2 = bwmorph(Ibw,'branchpoints');
-% figure
-% imshow(BW2)
-% 
-% BW2 = bwmorph(Ibw,'bridge');
-% figure
-% imshow(BW2)
+imshow(imresize(imgReconstructa,1/20));

@@ -117,8 +117,12 @@ function LoadImage_KeyPressFcn(hObject, eventdata, handles)
 
 
 % --- Executes on button press in Calculate.
-function Calculate_Callback(hObject, eventdata, handles)
+function Calibrate_Callback(hObject, eventdata, handles)
 % hObject    handle to Calculate (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+global myImage;
+global myImageBraille;
+myImageBraille = text2braille(double((myImage))/255);
+axes(handles.axes2);
+imshow(myImageBraille);

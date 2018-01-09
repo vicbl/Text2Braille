@@ -1,12 +1,11 @@
-%%
-clear all; close all; clc
+function [brailleImage]=text2braille(texteImage)
 
-imgATester = double((imread('img/foret.PNG')))/255;
+
+imgATester = texteImage;
 imgATesterBW = ~im2bw(imgATester);
 imgReconstructa = imgATesterBW;
 
-figure;
-imshow(imgATesterBW);title('Image à analyser');
+
 rg = regionprops(imgATesterBW,'PixelIdxList','Centroid','Perimeter');
 hold on
 for i = 1:length(rg)
@@ -27,7 +26,7 @@ for i=1:y
     lettreATesterCrop = imcrop(imgATesterBW,cell2mat(boundingbox(i)));
     
     for n=1:36
-        modeleLettre = double((imread(sprintf('./Alphabet/alphabet_%d.png',n))))/255;
+        modeleLettre = double((imread(sprintf('../Alphabet/alphabet_%d.png',n))))/255;
         modeleLettreBW = ~im2bw(modeleLettre);
         boundingboxLetterStruct=regionprops(modeleLettreBW,'BoundingBox');
         boundingboxLetter = struct2cell(boundingboxLetterStruct);
@@ -50,7 +49,7 @@ for i=1:y
             val(1,i)=n;
             val(2,i)=tmpval;
             letter=imresize(modelLettreCrop,taille);
-            braille=double((imread(sprintf('./braille/braille_%d.png',n))))/255;
+            braille=double((imread(sprintf('../braille/braille_%d.png',n))))/255;
         end
         
     end
@@ -63,25 +62,4 @@ for i=1:y
 end
 
  %%
-figure;
-imshow(imgReconstructa);
-
-%% skel
-
-%%
-% clear all; close all; clc
-% I = double(imread('img/alpha.PNG'));
-% 
-% Ibw = ~im2bw(I);
-% imshow(Ibw);
-% BW3 = bwmorph(Ibw,'skel',Inf);
-% figure
-% imshow(BW3)
-% 
-% BW2 = bwmorph(Ibw,'branchpoints');
-% figure
-% imshow(BW2)
-% 
-% BW2 = bwmorph(Ibw,'bridge');
-% figure
-% imshow(BW2)
+brailleImage=~imgReconstructa;
