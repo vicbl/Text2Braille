@@ -1,5 +1,7 @@
-function [brailleImage]=text2braille(texteImage)
+function [brailleImage]=text2brailleAdaptSize(texteImage)
 
+% On a joué sur le size de l'image d'input (x20) 
+% et pour que l image de sortie ne soit pas grande, on l'a fait un resize (x1/20) 
 
 
 %% On a joué sur le size de l'image d'input (x20) 
@@ -7,16 +9,22 @@ function [brailleImage]=text2braille(texteImage)
 imgATester = texteImage;
 %imgATester = adapthisteq(imgATester);
 imgATesterBW = ~im2bw(imgATester);
-imgReconstructa = imgATesterBW;
+imgReconstructa =imgATesterBW;
 
 
-% figure;
-% imshow(imgATesterBW);title('Image à analyser');
+
 %% Region d'interet
 rg = regionprops(imgATesterBW,'PixelIdxList','Centroid'); 
+
+coords = vertcat(rg.Centroid);  % 2-by-18 matrix of centroid data
+[~, ~, coords(:, 2)] = histcounts(coords(:, 2), 3);  % Bin the "y" data
+[~, sortIndex] = sortrows(coords, [2 1]);  % Sort by "y" ascending, then "x" ascending
+rg = rg(sortIndex);  % Apply sort index to s
+figure;
+imshow(imgATesterBW);title('Image à analyser');
 hold on
 %%boucle pour afficher les valeurs sur les images
-for i = 1:length(rg)
+for i = 1:numel(rg)
     cc = rg(i).Centroid;
     text(cc(1),cc(2),['',num2str(i)],'Color','r','FontSize',9)
 end
@@ -29,6 +37,9 @@ boundingbox = struct2cell(boundingboxStruct);
 
 val=zeros(2,y);
 
+figure(12);
+imshow(imgReconstructa);
+hold on;
 for i=1:y %Y nombre qui es sur l'objet
     %on compare la ROI avec tous les alphabets
     
@@ -58,9 +69,12 @@ for i=1:y %Y nombre qui es sur l'objet
  
     brailleBW=~im2bw(braille);
  
+
+    
     tmp=round(cell2mat(boundingbox(1,i)));
-    imgReconstructa(tmp(2):tmp(2)+tmp(4),tmp(1):tmp(1)+tmp(3))=imresize(brailleBW,[tmp(4)+1 tmp(3)+1]); %**
+    imagesc(tmp(1),tmp(2),braille)
+    imgReconstructa(tmp(2):tmp(2)+tmp(4),tmp(1):tmp(1)+tmp(3))= imresize(letter,[tmp(4)+1 tmp(3)+1]); %**
     
 end
-
+hold off;
 brailleImage=~imgReconstructa;
