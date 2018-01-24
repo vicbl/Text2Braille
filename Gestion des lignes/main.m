@@ -13,47 +13,55 @@ imshow(imgATesterBW);title('Image à analyser');
 imgReconstructa=[];
 word=[ ];
 ligneRestant=imgATesterBW;
- nbLigne=1;
-%% Tant qu'il y a des lignes à traiter 
+nbLigne=1;
+%% Tant qu'il y a des lignes à traiter
 while 1
-   
+    
     [imgLigne, ligneRestant]=lines(ligneRestant);
-%     Décommenter pour afficher le texte et les lignes
-%     figure;
-%     subplot(3,1,1);imshow(imgATesterBW);title('INPUT IMAGE')
-%     subplot(3,1,2);imshow(imgLigne);title('FIRST LINE')
-%     subplot(3,1,3);imshow(ligneRestant);title('REMAIN LINES')
-
-    % On récupère les région d'interets de la ligne à traiter
-    rg = regionprops(imgLigne,'PixelIdxList');
+    
+    %     Décommenter pour afficher le texte et les lignes
+    %     figure;
+    %     subplot(3,1,1);imshow(imgATesterBW);title('INPUT IMAGE')
+    %     subplot(3,1,2);imshow(imgLigne);title('FIRST LINE')
+    %     subplot(3,1,3);imshow(ligneRestant);title('REMAIN LINES')
+    
     
     % Récuperation des rectangles qui contiennent les ROI
     % Chaque rectangle correspond à une lettre
     boundingboxStruct=regionprops(imgLigne,'BoundingBox');
     boundingbox = struct2cell(boundingboxStruct);
     
-    [x y] = size(boundingbox);
+    [x nbLettre] = size(boundingbox);
     
-    val=zeros(2,y);
-    %lettreATesterCrop = imcrop(imgATesterBW,cell2mat(boundingbox(1)));
-    for i=1:y
+    rgCentroid=regionprops(imgLigne,'Centroid');
+    for i=1:length(rgCentroid)
+        x_centroid(i) = rgCentroid(i).Centroid(1);
+        y_centroid(i) = rgCentroid(i).Centroid(2);
+    end
+    moyenneY_lettre = mean(y_centroid)
+    moyenneX_lettre = mean(x_centroid)
+    
+    
+    
+    % Pour chaque ROI on cherche la lettre correspondante
+    for i=1:nbLettre
         
         lettreATesterCrop = imcrop(imgLigne,cell2mat(boundingbox(i)));
-        [lettre, braille, lettreNum]= readLetter(lettreATesterCrop,val,i,boundingbox,imgLigne);
+        [lettre, braille, lettreNum]= readLetter(lettreATesterCrop,rgCentroid(i),moyenneX_lettre,moyenneY_lettre);
         %imgReconstructa(tmp(2):tmp(2)+tmp(4),tmp(1):tmp(1)+tmp(3))=imresize(braille,[tmp(4)+1 tmp(3)+1]);
         
         imgReconstructa=[imgReconstructa braille];
         word = [word convertLetter(lettreNum)];
     end
     
-     fprintf(fid,'%s\n',word);%Write 'word' in text file (upper)
+    fprintf(fid,'%s\n',word);%Write 'word' in text file (upper)
     % Clear 'word' variable
     word=[ ];
     %*When the sentences finish, breaks the loop
     if isempty(ligneRestant)  %See variable 're' in Fcn 'lines'
         break
     end
-     nbLigne=nbLigne+11;
+    nbLigne=nbLigne+11;
 end
 figure;
 imshow(imgReconstructa);
