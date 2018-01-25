@@ -3,13 +3,17 @@ function [lettre, braille, lettreNum]=readLetter(lettreATesterCrop,centre,moyenn
 val_correlation = 0;
 index_lettre = 0;
 
+lettretmp=[];
+brailletmp=[];
+index_lettre=0;
+
 0.7*moyenneY_lettre
 1.3*moyenneY_lettre
 % Si le centre de la lettre est positionné au dessus ou en dessous de la moyenne
 % Surement un des caractères suivants  ' " , .
 if (centre.Centroid(2)>1.3*moyenneY_lettre||centre.Centroid(2)<0.7*moyenneY_lettre)
   
-    for n=27:31
+    for n=27:36
         modeleLettre = double((imread(sprintf('./../alphabet/alphabet_%d.png',n))))/255;
         modeleLettreBW = ~im2bw(modeleLettre);
         boundingboxLetterStruct=regionprops(modeleLettreBW,'BoundingBox');
@@ -58,7 +62,17 @@ else
 end
 
 
-% tmp=round(cell2mat(boundingbox));
+ % Si c'est une virgule ou un apostrophe
+if (index_lettre == 28 || index_lettre == 36 )
+    if (centre.Centroid(2)>1.3*moyenneY_lettre)
+        index_lettre=28;
+    else
+        index_lettre=36;
+    end
+end
+
+% 
+% [tailleX tailleY]=round(size(lettreATesterCrop));
 % if (index_lettre == 9 || index_lettre == 27 )
 %     if(taille(2)/taille(1) < 0.7)
 %         index_lettre = 9;

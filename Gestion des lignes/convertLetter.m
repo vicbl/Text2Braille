@@ -62,6 +62,16 @@ switch n
         lettre=';';
     case 31
         lettre='!';
+    case 32
+        lettre='(';
+    case 33
+        lettre=')';
+    case 34
+        lettre='"';
+    case 35
+        lettre='-';
+    case 36
+        lettre='''';
     otherwise
         lettre='&&';
 end
