@@ -1,18 +1,9 @@
-%%
-clear all; close all; clc
-
-%Ouvre text.txt en écriture
-fid = fopen('text.txt', 'wt');
-
-%%
-
-imgText = double((imread('../img/foret.PNG')))/255;
-
+function [imgBraille,fichierTexte]=text2braille(imgDepart,fichierEntree,affichagefigure)
 
 
 espace = double((imread('./../alphabet_braille/braille_espace.png')))/255;
 
-imgATesterBW = ~im2bw(imgText);
+imgATesterBW = ~im2bw(imgDepart);
 figure;
 imshow(imgATesterBW);title('Image à analyser');
 imgReconstructa=[];
@@ -69,27 +60,19 @@ while 1
         end
         imgReconstructa=[imgReconstructa espace];
         word = [word ' '];
-        
+    
     end
     
     ligneReconstruite{nbLigne}=imgReconstructa;
-    fprintf(fid,'%s\n',word);%Write 'word' in text file (upper)
+    fprintf(fichierEntree,'%s\n',word);%Write 'word' in text file (upper)
     % Clear 'word' variable
     word=[ ];
     %*When the sentences finish, breaks the loop
     if isempty(ligneRestant)  %See variable 're' in Fcn 'lines'
         break
     end
-    nbLigne=nbLigne+1;
+    nbLigne=nbLigne+11;
 end
 
-imgTexta = imgText;
+fichierTexte = fichierEntree;
 imgBraille = imgReconstructa;
-
-imgtmp=reconstructImgFromLine(ligneReconstruite);
-figure;
-subplot(1,2,1);imshow(imgTexta);
-subplot(1,2,2);imshow(imgBraille);
-%%
-
-
