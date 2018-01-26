@@ -1,4 +1,16 @@
-function [lettre, braille, lettreNum]=readLetter(lettreATesterCrop,centre,moyenneX_lettre,moyenneY_lettre)
+function [lettre, braille, lettreNum]=readLetter(lettreAConvertir,centre,moyenneTailleX_lettre,moyenneTailleY_lettre)
+% Fonction qui renvoie les images de la lettre au format texte, braille
+% ainsi que son index dans le dictionnaire
+% Entrée :
+% lettreAConvertir : lettre au format binaire et découpée au bord (boundingBox)
+% centre : position moyenne du centre des lettre (permettra de différencier , et ') 
+% moyenneTailleX_lettre : taille moyenne des lettres suivant x
+% moyenneTailleY_lettre : taille moyenne des lettres suivant y
+%
+% Sortie :
+% lettre : image de la lettre du dictionnaire au format texte correspondante à la lettre d'entrée
+% braille : image de la lettre du dictionnaire au format braille correspondante à la lettre d'entrée
+% lettreNum : index de la position de la lettre dans le dictionnaire correspondante à la lettre d'entrée
 
 val_correlation = 0;
 index_lettre = 0;
@@ -20,9 +32,9 @@ for n=1:36
     modelLettreCrop = imcrop(modeleLettreBW,cell2mat(boundingboxLetter(1)));
     
     
-    taille = size(lettreATesterCrop);
+    taille = size(lettreAConvertir);
     
-    tmpval_correlation = corr2(imresize(modelLettreCrop,taille),lettreATesterCrop);
+    tmpval_correlation = corr2(imresize(modelLettreCrop,taille),lettreAConvertir);
     if (val_correlation<tmpval_correlation)
         index_lettre=n;
         val_correlation=tmpval_correlation;
@@ -36,7 +48,7 @@ for n=1:36
     % Surement un des caractères suivants  ' " , .
     % Si c'est une virgule ou un apostrophe
     if (index_lettre == 28 || index_lettre == 36 )
-        if (centre.Centroid(2)<0.7*moyenneY_lettre)
+        if (centre.Centroid(2)<0.7*moyenneTailleY_lettre)
             index_lettre=28;
         else
             index_lettre=36;

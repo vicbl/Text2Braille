@@ -1,18 +1,9 @@
-%%
-clear all; close all; clc
-
-%Ouvre text.txt en écriture
-fid = fopen('text.txt', 'wt');
-
-%%
-
-imgText = double((imread('../img/foret.PNG')))/255;
-
+function [imgBraille,fichierTexte]=text2braille(imgDepart,fichierEntree,affichagefigure)
 
 
 espace = double((imread('./../alphabet_braille/braille_espace.png')))/255;
 
-imgATesterBW = ~im2bw(imgText);
+imgATesterBW = ~im2bw(imgDepart);
 figure;
 imshow(imgATesterBW);title('Image à analyser');
 imgReconstructa=[];
@@ -24,7 +15,7 @@ nbLigne=1;
 %% Tant qu'il y a des lignes à traiter
 while 1
     
-    [imgLigne, ligneRestant]=lines(ligneRestant);
+    [imgLigne, ligneRestant]=decoupageLignes(ligneRestant);
     
     
     %     Décommenter pour afficher le texte et les lignes
@@ -44,12 +35,12 @@ while 1
     
     [x nbLettre] = size(boundingbox);
     
-    [moyenneX_size, moyenneY_size]=moyenneTailleLettre(boundingbox,nbLettre);
+    [moyenneX_size, moyenneY_size]=moyenneTailleLettre(boundingbox);
     [moyenneX_lettre,moyenneY_lettre]=moyennePositionCentre(rgCentroid);
     
     
     
-    mots= cutWord(imgLigne,moyenneY_size);
+    mots= decoupageMots(imgLigne,moyenneY_size);
     
     
     for index_mot=1:length(mots)
@@ -69,27 +60,20 @@ while 1
         end
         imgReconstructa=[imgReconstructa espace];
         word = [word ' '];
-        
+    
     end
     
     ligneReconstruite{nbLigne}=imgReconstructa;
-    fprintf(fid,'%s\n',word);%Write 'word' in text file (upper)
+    imgReconstructa=[];
+    fprintf(fichierEntree,'%s\n',word);%Write 'word' in text file (upper)
     % Clear 'word' variable
     word=[ ];
     %*When the sentences finish, breaks the loop
     if isempty(ligneRestant)  %See variable 're' in Fcn 'lines'
         break
     end
-    nbLigne=nbLigne+1;
+    nbLigne=nbLigne+11;
 end
+imgBraille=reconstructImgFromLine(ligneReconstruite);
 
-imgTexta = imgText;
-imgBraille = imgReconstructa;
-
-imgtmp=reconstructImgFromLine(ligneReconstruite);
-figure;
-subplot(1,2,1);imshow(imgTexta);
-subplot(1,2,2);imshow(imgBraille);
-%%
-
-
+fichierTexte = fichierEntree;
