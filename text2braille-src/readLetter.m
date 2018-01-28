@@ -1,9 +1,9 @@
-function [lettre, braille, lettreNum]=readLetter(lettreAConvertir,centre,moyenneTailleX_lettre,moyenneTailleY_lettre)
+function [lettre, braille, lettreNum]=readLetter(lettreAConvertir,centre,moyennePositionX_lettre,moyennePositionY_lettre)
 % Fonction qui renvoie les images de la lettre au format texte, braille
 % ainsi que son index dans le dictionnaire
 % Entrée :
 % lettreAConvertir : lettre au format binaire et découpée au bord (boundingBox)
-% centre : position moyenne du centre des lettre (permettra de différencier , et ') 
+% centre : position moyenne du centre des lettre (permettra de différencier , et ')
 % moyenneTailleX_lettre : taille moyenne des lettres suivant x
 % moyenneTailleY_lettre : taille moyenne des lettres suivant y
 %
@@ -48,7 +48,7 @@ for n=1:36
     % Surement un des caractères suivants  ' " , .
     % Si c'est une virgule ou un apostrophe
     if (index_lettre == 28 || index_lettre == 36 )
-        if (centre.Centroid(2)<0.7*moyenneTailleY_lettre)
+        if (centre.Centroid(1)<0.7*moyennePositionY_lettre)
             index_lettre=28;
         else
             index_lettre=36;
