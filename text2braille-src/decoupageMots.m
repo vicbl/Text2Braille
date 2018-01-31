@@ -32,8 +32,8 @@ for blob = 1 : numBlobs
 	% Crop it out of the original gray scale image.
 	thisWord = imcrop(imgLigne, thisBoundingBox);
 	% Display the cropped image
-	subplot(numRows, numRows, blob); % Switch to proper axes.
-	imshow(thisWord); % Display it.
+% 	subplot(numRows, numRows, blob); % Switch to proper axes.
+% 	imshow(thisWord); % Display it.
 	% Put a caption above it.
 	caption = sprintf('Word #%d', blob);
 	title(caption);
