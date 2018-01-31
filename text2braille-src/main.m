@@ -14,7 +14,7 @@ imgText = double((imread('../text2braille-images/img/foret.PNG')))/255;
 %% Fonction de converion
 tStart = tic;
 [imgBraille,fichierTexte]=text2braille(imgText,fichierTxt);
-tElapsed = toc(tStart); 
+tElapsed = toc(tStart);
 
 %% Affichage du résulatat
 figure;

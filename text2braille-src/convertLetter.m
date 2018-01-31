@@ -57,21 +57,19 @@ switch n
     case 28
         lettre=',';
     case 29
-        lettre='?';
-    case 30
-        lettre=';';
-    case 31
-        lettre='!';
-    case 32
         lettre='(';
-    case 33
+    case 30
         lettre=')';
-    case 34
-        lettre='"';
-    case 35
-        lettre='-';
-    case 36
+    case 31
         lettre='''';
+    case 32
+        lettre='-';
+    case 33
+        lettre='?';
+    case 34
+        lettre='!';
+    case 35
+        lettre=';';
     otherwise
         lettre='&&';
 end
