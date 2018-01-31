@@ -22,7 +22,7 @@ function varargout = DemoGUI(varargin)
 
 % Edit the above text to modify the response to help DemoGUI
 
-% Last Modified by GUIDE v2.5 28-Nov-2017 17:39:12
+% Last Modified by GUIDE v2.5 31-Jan-2018 16:24:13
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -116,13 +116,40 @@ function LoadImage_KeyPressFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-% --- Executes on button press in Calculate.
-function Calibrate_Callback(hObject, eventdata, handles)
-% hObject    handle to Calculate (see GCBO)
+% --- Executes on button press in SaveImage.
+function Convert_Callback(hObject, eventdata, handles)
+% hObject    handle to SaveImage (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global myImage;
 global myImageBraille;
-myImageBraille = text2braille(double((myImage))/255);
+global fichierTexte;
+%%%
+fichierTxt = fopen('text.txt', 'wt');
+tStart = tic;
+[myImageBraille,fichierTexte]=text2braille(myImage,fichierTxt);
+tElapsed = toc(tStart);
+set(handles.time, 'String', tElapsed);
 axes(handles.axes2);
 imshow(myImageBraille);
+
+
+
+
+
+
+
+
+% --- Executes on button press in SaveImage.
+function SaveImage_Callback(hObject, eventdata, handles)
+% hObject    handle to SaveImage (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+global myImageBraille;
+fn = get(handles.imName,'string');
+imwrite(myImageBraille,strcat(fn,'_braille.jpg'),'jpg');
+
+
+
+
