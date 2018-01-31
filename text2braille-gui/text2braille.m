@@ -1,66 +1,103 @@
-function [brailleImage]=text2braille(texteImage)
+function [imgBraille,fichierTexte]=text2braille(imgDepart,fichierEntree,affichagefigure)
 
 
+espace = double((imread('../text2braille-images/alphabet_braille/braille_espace.png')))/255;
 
-%% On a joué sur le size de l'image d'input (x20) 
-% et pour que l image de sortie ne soit pas grande, on l'a fait un resize (x1/20) 
-imgATester = texteImage;
-%imgATester = adapthisteq(imgATester);
-imgATesterBW = ~im2bw(imgATester);
-imgReconstructa = imgATesterBW;
-
-
+imgATesterBW = ~im2bw(imgDepart);
 % figure;
 % imshow(imgATesterBW);title('Image à analyser');
-%% Region d'interet
-rg = regionprops(imgATesterBW,'PixelIdxList','Centroid'); 
-hold on
-%%boucle pour afficher les valeurs sur les images
-for i = 1:length(rg)
-    cc = rg(i).Centroid;
-    text(cc(1),cc(2),['',num2str(i)],'Color','r','FontSize',9)
-end
-hold off
-%% récuperation des rectangles qui contiennent les ROI
-boundingboxStruct=regionprops(imgATesterBW,'BoundingBox');
-boundingbox = struct2cell(boundingboxStruct);
+imgReconstructa=[];
+word=[ ];
+ligneRestant=imgATesterBW;
 
-[x y] = size(boundingbox);
 
-val=zeros(2,y);
-
-for i=1:y %Y nombre qui es sur l'objet
-    %on compare la ROI avec tous les alphabets
+nbLigne=1;
+%% Tant qu'il y a des lignes à traiter
+while 1
     
-    lettreATesterCrop = imcrop(imgATesterBW,cell2mat(boundingbox(i)));
+    [imgLigne, ligneRestant]=decoupageLignes(ligneRestant);
     
-    for n=1:26
-        modeleLettre = double((imread(sprintf('../Alphabet/alphabet_%d.png',n))))/255;
-        modeleLettreBW = ~im2bw(modeleLettre);
-        boundingboxLetterStruct=regionprops(modeleLettreBW,'BoundingBox');
-        boundingboxLetter = struct2cell(boundingboxLetterStruct);
+    
+    %     Décommenter pour afficher le texte et les lignes
+    %     figure;
+    %     subplot(3,1,1);imshow(imgATesterBW);title('INPUT IMAGE')
+    %     subplot(3,1,2);imshow(imgLigne);title('FIRST LINE')
+    %     subplot(3,1,3);imshow(ligneRestant);title('REMAIN LINES')
+    
+    
+    
+    
+    % Récuperation des rectangles qui contiennent les ROI
+    % Chaque rectangle correspond à une lettre
+    boundingboxStruct=regionprops(imgLigne,'BoundingBox');
+    boundingboxMots = struct2cell(boundingboxStruct);
+    rgCentroid=regionprops(imgLigne,'Centroid');
+    
+    [x nbLettre] = size(boundingboxMots);
+    
+    [moyenneX_size, moyenneY_size]=moyenneTailleLettre(boundingboxMots);
+    [moyenneX_lettre,moyenneY_lettre]=moyennePositionCentre(rgCentroid);
+    
+    mots= decoupageMots(imgLigne,moyenneY_size);
+    
+    
+    for index_mot=1:length(mots)
+        boundingboxStruct=regionprops(mots{index_mot},'BoundingBox');
+        boundingboxLettre = struct2cell(boundingboxStruct);
         
-        modelLettreCrop = imcrop(modeleLettreBW,cell2mat(boundingboxLetter));
+        [x nbLettreMot] = size(boundingboxLettre);
         
+        max = -1;
+        memeAlignement = 0;
         
-        taille = size(lettreATesterCrop);
-        
-        tmpval = corr2(imresize(modelLettreCrop,taille),lettreATesterCrop);
-        
-        if (val(2,i)<tmpval)
-            val(1,i)=n;
-            val(2,i)=tmpval;
-            letter=imresize(modelLettreCrop,taille);
-            braille=double((imread(sprintf('../braille/braille_%d.png',n))))/255;
+        % On verifie si c'est un ! ; ?
+        for i=1:nbLettreMot
+            posX = cell2mat(boundingboxLettre(i));
+            posX = posX(1);
+            if ((max>0.95*posX && max<1.05*posX ))
+                memeAlignement = 1;
+            end
+            max=posX;
         end
         
+        
+        % Si on à le même alignement entre deux ROI
+        if (memeAlignement == 1)
+            [lettre, braille, lettreNum]= readPonctuation(mots{index_mot});
+            imgReconstructa=[imgReconstructa braille];
+            word = [word convertLetter(lettreNum)];
+        else
+            % Pour chaque ROI on cherche la lettre correspondante
+            for i=1:nbLettreMot
+                
+                
+                lettreATesterCrop = imcrop(mots{index_mot},cell2mat(boundingboxLettre(i)));
+                [lettre, braille, lettreNum]= readLetter(lettreATesterCrop,rgCentroid(i),moyenneX_lettre,moyenneY_lettre);
+                
+                imgReconstructa=[imgReconstructa braille];
+                word = [word convertLetter(lettreNum)];
+            end
+        end
+        
+        imgReconstructa=[imgReconstructa espace];
+        word = [word ' '];
+        
     end
- 
-    brailleBW=~im2bw(braille);
- 
-    tmp=round(cell2mat(boundingbox(1,i)));
-    imgReconstructa(tmp(2):tmp(2)+tmp(4),tmp(1):tmp(1)+tmp(3))=imresize(brailleBW,[tmp(4)+1 tmp(3)+1]); %**
     
+    ligneReconstruite{nbLigne}=imgReconstructa;
+    imgReconstructa=[];
+    fprintf(fichierEntree,'%s\n',word);%Write 'word' in text file (upper)
+    % Clear 'word' variable
+    word=[ ];
+    %*When the sentences finish, breaks the loop
+    if isempty(ligneRestant)  %See variable 're' in Fcn 'lines'
+        break
+    end
+    nbLigne=nbLigne+11;
 end
+imgBraille=reconstructImgFromLine(ligneReconstruite);
 
-brailleImage=~imgReconstructa;
+fichierTexte = fichierEntree;
+
+
+

@@ -9,7 +9,7 @@ clear all; close all; clc
 fichierTxt = fopen('text.txt', 'wt');
 
 % Choix de l'image du texte
-imgText = double((imread('../text2braille-images/img/foret.PNG')))/255;
+imgText = double((imread('../text2braille-images/img/lorem.PNG')))/255;
 
 %% Fonction de converion
 tStart = tic;

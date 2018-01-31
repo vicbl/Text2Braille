@@ -1,4 +1,4 @@
-function [lettre, braille, lettreNum]=readLetter(lettreAConvertir,centre,moyennePositionX_lettre,moyennePositionY_lettre)
+function [lettre, braille, lettreNum]=readPonctuation(lettreAConvertir)
 % Fonction qui renvoie les images de la lettre au format texte, braille
 % ainsi que son index dans le dictionnaire
 % Entrée :
@@ -22,41 +22,28 @@ index_lettre=0;
 
 
 
-for n=1:32
-    
+for n=33:35
+   
     modeleLettre = double((imread(sprintf('../text2braille-images/alphabet/alphabet_%d.png',n))))/255;
     modeleLettreBW = ~im2bw(modeleLettre);
-    boundingboxLetterStruct=regionprops(modeleLettreBW,'BoundingBox');
-    boundingboxLetter = struct2cell(boundingboxLetterStruct);
+ 
     
-    modelLettreCrop = imcrop(modeleLettreBW,cell2mat(boundingboxLetter(1)));
     
     
     taille = size(lettreAConvertir);
+    tmpval_correlation = corr2(imresize(modeleLettreBW,taille),lettreAConvertir);
     
-    tmpval_correlation = corr2(imresize(modelLettreCrop,taille),lettreAConvertir);
     if (val_correlation<tmpval_correlation)
         index_lettre=n;
         val_correlation=tmpval_correlation;
-        lettretmp=imresize(modelLettreCrop,taille);
+        lettretmp=modeleLettreBW;
         brailletmp=double((imread(sprintf('../text2braille-images/alphabet_braille/braille_%d.png',n))))/255;
     end
     
     
     
-    % Si le centre de la lettre est positionné au dessus ou en dessous de la moyenne
-    % Surement un des caractères suivants  ' " , .
-    % Si c'est une virgule ou un apostrophe
-    if (index_lettre == 28 || index_lettre == 31)
-        
-        if (centre.Centroid(1)<0.7*moyennePositionY_lettre)
-            index_lettre=28;
-        else
-            index_lettre=31;
-        end
-    end
-end
 
+end
 
 
 lettreNum = index_lettre;
