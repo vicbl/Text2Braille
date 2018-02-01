@@ -14,7 +14,7 @@
 ### Exemple de résultats
 
 #### Résultat 1
-<img src="./info/resultat1.png"  alt="resultat 1">
+<img src="./info/resultat.png"  alt="resultat 1">
 
 #### Résultat 2
 <img src="./info/resultat2.png"  alt="resultat 2">
