@@ -1,4 +1,4 @@
-function [imgBraille,fichierTexte]=text2braille(imgDepart,fichierEntree,affichagefigure)
+function [imgBraille,fichierTexte]=text2braille(imgDepart)
 
 
 espace = double((imread('../text2braille-images/alphabet_braille/braille_espace.png')))/255;
@@ -9,7 +9,7 @@ imgATesterBW = ~im2bw(imgDepart);
 imgReconstructa=[];
 word=[ ];
 ligneRestant=imgATesterBW;
-
+filecontent='';
 
 nbLigne=1;
 %% Tant qu'il y a des lignes à traiter
@@ -86,7 +86,8 @@ while 1
     
     ligneReconstruite{nbLigne}=imgReconstructa;
     imgReconstructa=[];
-    fprintf(fichierEntree,'%s\n',word);%Write 'word' in text file (upper)
+   
+    filecontent =vertcat(filecontent,word);
     % Clear 'word' variable
     word=[ ];
     %*When the sentences finish, breaks the loop
@@ -97,7 +98,7 @@ while 1
 end
 imgBraille=reconstructImgFromLine(ligneReconstruite);
 
-fichierTexte = fichierEntree;
+fichierTexte = filecontent;
 
 
 

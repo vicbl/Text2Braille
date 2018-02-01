@@ -26,11 +26,13 @@ for n=1:32
     
     modeleLettre = double((imread(sprintf('../text2braille-images/alphabet/alphabet_%d.png',n))))/255;
     modeleLettreBW = ~im2bw(modeleLettre);
-    boundingboxLetterStruct=regionprops(modeleLettreBW,'BoundingBox');
-    boundingboxLetter = struct2cell(boundingboxLetterStruct);
     
-    modelLettreCrop = imcrop(modeleLettreBW,cell2mat(boundingboxLetter(1)));
     
+        boundingboxLetterStruct=regionprops(modeleLettreBW,'BoundingBox');
+        boundingboxLetter = struct2cell(boundingboxLetterStruct);
+        
+        modelLettreCrop = imcrop(modeleLettreBW,cell2mat(boundingboxLetter(1)));
+
     
     taille = size(lettreAConvertir);
     
@@ -54,6 +56,18 @@ for n=1:32
         else
             index_lettre=31;
         end
+    end
+    
+    switch index_lettre
+        case 27 % .
+            if (centre.Centroid(1)>0.3*moyennePositionY_lettre)
+                index_lettre=9;
+            end
+%         case 29 % (
+            
+%         case 30 % )
+        otherwise
+            index_lettre=index_lettre;
     end
 end
 

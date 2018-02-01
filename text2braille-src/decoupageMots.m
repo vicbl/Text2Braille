@@ -35,7 +35,7 @@ for blob = 1 : numBlobs
 % 	subplot(numRows, numRows, blob); % Switch to proper axes.
 % 	imshow(thisWord); % Display it.
 	% Put a caption above it.
-	caption = sprintf('Word #%d', blob);
-	title(caption);
+%	caption = sprintf('Word #%d', blob);
+%	title(caption);
     mot{blob}=thisWord;
 end

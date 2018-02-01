@@ -1,15 +1,23 @@
-function [imgBraille,fichierTexte]=text2braille(imgDepart,fichierEntree,affichagefigure)
+function [imgBraille,fichierTexte]=text2braille(imgDepart,wait)
 
 
 espace = double((imread('../text2braille-images/alphabet_braille/braille_espace.png')))/255;
 
 imgATesterBW = ~im2bw(imgDepart);
-% figure;
-% imshow(imgATesterBW);title('Image à analyser');
+
+
+
+boundingboxStruct=regionprops(imgATesterBW,'BoundingBox');
+boundingboxLettreTotal = struct2cell(boundingboxStruct);
+[x nbLettreTotal] = size(boundingboxLettreTotal);
+
+
+incrementLettre = 0;
+
 imgReconstructa=[];
 word=[ ];
 ligneRestant=imgATesterBW;
-
+filecontent='';
 
 nbLigne=1;
 %% Tant qu'il y a des lignes à traiter
@@ -66,6 +74,8 @@ while 1
             [lettre, braille, lettreNum]= readPonctuation(mots{index_mot});
             imgReconstructa=[imgReconstructa braille];
             word = [word convertLetter(lettreNum)];
+            incrementLettre = incrementLettre +1;
+            waitbar(incrementLettre/nbLettreTotal,wait,'Conversion en cours')
         else
             % Pour chaque ROI on cherche la lettre correspondante
             for i=1:nbLettreMot
@@ -76,6 +86,9 @@ while 1
                 
                 imgReconstructa=[imgReconstructa braille];
                 word = [word convertLetter(lettreNum)];
+                incrementLettre = incrementLettre +1;
+                waitbar(incrementLettre/nbLettreTotal,wait,'Conversion en cours')
+                
             end
         end
         
@@ -86,7 +99,8 @@ while 1
     
     ligneReconstruite{nbLigne}=imgReconstructa;
     imgReconstructa=[];
-    fprintf(fichierEntree,'%s\n',word);%Write 'word' in text file (upper)
+    
+    filecontent =strvcat(filecontent,word);
     % Clear 'word' variable
     word=[ ];
     %*When the sentences finish, breaks the loop
@@ -95,9 +109,10 @@ while 1
     end
     nbLigne=nbLigne+11;
 end
+close(wait);
 imgBraille=reconstructImgFromLine(ligneReconstruite);
 
-fichierTexte = fichierEntree;
+fichierTexte = filecontent;
 
 
 

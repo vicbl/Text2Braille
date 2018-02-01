@@ -22,7 +22,7 @@ function varargout = DemoGUI(varargin)
 
 % Edit the above text to modify the response to help DemoGUI
 
-% Last Modified by GUIDE v2.5 31-Jan-2018 16:24:13
+% Last Modified by GUIDE v2.5 01-Feb-2018 09:53:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -127,7 +127,7 @@ global fichierTexte;
 %%%
 fichierTxt = fopen('text.txt', 'wt');
 tStart = tic;
-[myImageBraille,fichierTexte]=text2braille(myImage,fichierTxt);
+[myImageBraille,fichierTexte]=text2braille(myImage);
 tElapsed = toc(tStart);
 set(handles.time, 'String', tElapsed);
 axes(handles.axes2);
@@ -148,8 +148,22 @@ function SaveImage_Callback(hObject, eventdata, handles)
 
 global myImageBraille;
 fn = get(handles.imName,'string');
-imwrite(myImageBraille,strcat(fn,'_braille.jpg'),'jpg');
+[FileName,PathName]=uiputfile('braille.jpg','Enregistrer image en braille');
+imwrite(myImageBraille,fullfile(PathName,FileName),'jpg');
 
 
 
 
+
+
+
+% --- Executes on button press in saveText.
+function saveText_Callback(hObject, eventdata, handles)
+% hObject    handle to saveText (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global fichierTexte;
+[FileName,PathName]=uiputfile('braille.txt','Enregistrer fichier texte');
+fichierTxt = fopen(fullfile(PathName,FileName), 'wt');
+fprintf(fichierTxt,'%s\n',fichierTexte);
+fclose(fichierTxt);true
