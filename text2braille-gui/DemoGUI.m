@@ -41,6 +41,9 @@ if nargout
 else
     gui_mainfcn(gui_State, varargin{:});
 end
+
+
+addpath(genpath('../text2braille-src/'));
 % End initialization code - DO NOT EDIT
 
 
@@ -68,6 +71,8 @@ global myImage;
 myImage = [];
 set(handles.axes1,'YTick',[]);
 set(handles.axes1,'XTick',[]);
+set(handles.axes2,'YTick',[]);
+set(handles.axes2,'XTick',[]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -99,6 +104,7 @@ myImage = imread(fullfile(PathName,FileName));
 axes(handles.axes1);
 set(handles.imName, 'String', FileName);
 imshow(myImage);
+set(handles.Convert,'Enable','on');
 
 
 
@@ -125,15 +131,15 @@ global myImage;
 global myImageBraille;
 global fichierTexte;
 %%%
-fichierTxt = fopen('text.txt', 'wt');
+wait = waitbar(0,'Conversion en cours');
 tStart = tic;
-[myImageBraille,fichierTexte]=text2braille(myImage);
+[myImageBraille,fichierTexte]=text2braille(myImage,wait);
 tElapsed = toc(tStart);
-set(handles.time, 'String', tElapsed);
+set(handles.time, 'String',  sprintf('%d s',round(tElapsed,3)));
 axes(handles.axes2);
 imshow(myImageBraille);
-
-
+set(handles.SaveImage,'Enable','on');
+set(handles.saveText,'Enable','on');
 
 
 
@@ -165,5 +171,5 @@ function saveText_Callback(hObject, eventdata, handles)
 global fichierTexte;
 [FileName,PathName]=uiputfile('braille.txt','Enregistrer fichier texte');
 fichierTxt = fopen(fullfile(PathName,FileName), 'wt');
-fprintf(fichierTxt,'%s\n',fichierTexte);
-fclose(fichierTxt);true
+fprintf(fichierTxt,'%s\n',fichierTexte{:});
+fclose(fichierTxt);

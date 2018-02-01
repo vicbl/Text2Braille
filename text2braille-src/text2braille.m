@@ -17,7 +17,7 @@ incrementLettre = 0;
 imgReconstructa=[];
 word=[ ];
 ligneRestant=imgATesterBW;
-filecontent='';
+filecontent=[];
 
 nbLigne=1;
 %% Tant qu'il y a des lignes à traiter
@@ -100,14 +100,14 @@ while 1
     ligneReconstruite{nbLigne}=imgReconstructa;
     imgReconstructa=[];
     
-    filecontent =strvcat(filecontent,word);
+    filecontent{nbLigne} =(word);
     % Clear 'word' variable
     word=[ ];
     %*When the sentences finish, breaks the loop
     if isempty(ligneRestant)  %See variable 're' in Fcn 'lines'
         break
     end
-    nbLigne=nbLigne+11;
+    nbLigne=nbLigne+1;
 end
 close(wait);
 imgBraille=reconstructImgFromLine(ligneReconstruite);
