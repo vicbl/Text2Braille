@@ -1,5 +1,5 @@
-function varargout = DemoGUI(varargin)
-% DEMOGUI MATLAB code for DemoGUI.fig
+function varargout = Text2Braille(varargin)
+% DEMOGUI MATLAB code for Text2Braille.fig
 %      DEMOGUI, by itself, creates a new DEMOGUI or raises the existing
 %      singleton*.
 %
@@ -11,16 +11,16 @@ function varargout = DemoGUI(varargin)
 %
 %      DEMOGUI('Property','Value',...) creates a new DEMOGUI or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before DemoGUI_OpeningFcn gets called.  An
+%      applied to the GUI before Text2Braille_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to DemoGUI_OpeningFcn via varargin.
+%      stop.  All inputs are passed to Text2Braille_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help DemoGUI
+% Edit the above text to modify the response to help Text2Braille
 
 % Last Modified by GUIDE v2.5 01-Feb-2018 09:53:16
 
@@ -28,8 +28,8 @@ function varargout = DemoGUI(varargin)
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
     'gui_Singleton',  gui_Singleton, ...
-    'gui_OpeningFcn', @DemoGUI_OpeningFcn, ...
-    'gui_OutputFcn',  @DemoGUI_OutputFcn, ...
+    'gui_OpeningFcn', @Text2Braille_OpeningFcn, ...
+    'gui_OutputFcn',  @Text2Braille_OutputFcn, ...
     'gui_LayoutFcn',  [] , ...
     'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -43,25 +43,25 @@ else
 end
 
 
-addpath(genpath('../text2braille-src/'));
+addpath(genpath('./text2braille-utils/text2braille-src/'));
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before DemoGUI is made visible.
-function DemoGUI_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before Text2Braille is made visible.
+function Text2Braille_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to DemoGUI (see VARARGIN)
+% varargin   command line arguments to Text2Braille (see VARARGIN)
 
-% Choose default command line output for DemoGUI
+% Choose default command line output for Text2Braille
 handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes DemoGUI wait for user response (see UIRESUME)
+% UIWAIT makes Text2Braille wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -77,7 +77,7 @@ set(handles.axes2,'XTick',[]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % --- Outputs from this function are returned to the command line.
-function varargout = DemoGUI_OutputFcn(hObject, eventdata, handles)
+function varargout = Text2Braille_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB

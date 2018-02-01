@@ -24,7 +24,7 @@ index_lettre=0;
 
 for n=1:32
     
-    modeleLettre = double((imread(sprintf('../text2braille-images/alphabet/alphabet_%d.png',n))))/255;
+    modeleLettre = double((imread(sprintf('./text2braille-utils/text2braille-images/alphabet/alphabet_%d.png',n))))/255;
     modeleLettreBW = ~im2bw(modeleLettre);
     
     
@@ -41,7 +41,7 @@ for n=1:32
         index_lettre=n;
         val_correlation=tmpval_correlation;
         lettretmp=imresize(modelLettreCrop,taille);
-        brailletmp=double((imread(sprintf('../text2braille-images/alphabet_braille/braille_%d.png',n))))/255;
+        brailletmp=double((imread(sprintf('./text2braille-utils/text2braille-images/alphabet_braille/braille_%d.png',n))))/255;
     end
     
     

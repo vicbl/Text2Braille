@@ -1,7 +1,7 @@
 function [imgBraille,fichierTexte]=text2braille(imgDepart,wait)
 
 
-espace = double((imread('../text2braille-images/alphabet_braille/braille_espace.png')))/255;
+espace = double((imread('./text2braille-utils/text2braille-images/alphabet_braille/braille_espace.png')))/255;
 
 imgATesterBW = ~im2bw(imgDepart);
 
