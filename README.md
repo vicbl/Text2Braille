@@ -6,13 +6,13 @@
 4. Vous pouvez enregistrer l'image braille et également le texte retranscrit de l'image au format txt.
 
 ### Interface
-<img src="./info/interface.PNG">
+<img src="./info/interface.png" alt="interface">
 
 ### Conversion
-<img src="./info/Conversion.PNG">
+<img src="./info/conversion.png" alt="conversion">
 
 #### Exemple de résultats
 ##### Résultat 1
-<img src="./info/resultat1.PNG">
+<img src="./info/resultat1.png"  alt="resultat 1">
 ##### Résultat 2
-<img src="./info/resultat2.PNG">
+<img src="./info/resultat2.png"  alt="resultat 2">
