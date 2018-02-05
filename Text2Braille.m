@@ -132,12 +132,18 @@ global myImageBraille;
 global fichierTexte;
 %%%
 wait = waitbar(0,'Conversion en cours');
+% We turn the interface off for processing.
+InterfaceObj=findobj(handles.figure1,'Enable','on');
+set(InterfaceObj,'Enable','off');
 tStart = tic;
 [myImageBraille,fichierTexte]=text2braille(myImage,wait);
 tElapsed = toc(tStart);
-set(handles.time, 'String',  sprintf('%d s',round(tElapsed,3)));
+set(handles.time, 'String',  sprintf('%i s',round(tElapsed,3)));
 axes(handles.axes2);
 imshow(myImageBraille);
+
+set(InterfaceObj,'Enable','on');
+set(handles.Convert,'Enable','off');
 set(handles.SaveImage,'Enable','on');
 set(handles.saveText,'Enable','on');
 
