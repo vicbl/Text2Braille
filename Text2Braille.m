@@ -131,7 +131,7 @@ global myImage;
 global myImageBraille;
 global fichierTexte;
 %%%
-wait = waitbar(0,'Conversion en cours');
+wait = waitbar(0,'Traduction en cours');
 % We turn the interface off for processing.
 InterfaceObj=findobj(handles.figure1,'Enable','on');
 set(InterfaceObj,'Enable','off');

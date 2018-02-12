@@ -57,12 +57,8 @@ switch n
     case 28
         lettre=',';
     case 29
-        lettre='(';
-    case 30
-        lettre=')';
-    case 31
         lettre='''';
-    case 32
+    case 30
         lettre='-';
     case 33
         lettre='?';

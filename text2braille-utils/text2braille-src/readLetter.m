@@ -22,7 +22,7 @@ index_lettre=0;
 
 
 
-for n=1:32
+for n=1:30
     
     modeleLettre = double((imread(sprintf('./text2braille-utils/text2braille-images/alphabet/alphabet_%d.png',n))))/255;
     modeleLettreBW = ~im2bw(modeleLettre);
@@ -49,12 +49,12 @@ for n=1:32
     % Si le centre de la lettre est positionné au dessus ou en dessous de la moyenne
     % Surement un des caractères suivants  ' " , .
     % Si c'est une virgule ou un apostrophe
-    if (index_lettre == 28 || index_lettre == 31)
+    if (index_lettre == 28 || index_lettre == 29)
         
         if (centre.Centroid(1)<0.7*moyennePositionY_lettre)
             index_lettre=28;
         else
-            index_lettre=31;
+            index_lettre=29;
         end
     end
     
